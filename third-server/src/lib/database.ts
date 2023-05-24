@@ -1,5 +1,3 @@
-import { MongoClient } from 'mongodb';
+import { PrismaClient } from "@prisma/client";
 
-export async function connect(): Promise<MongoClient> {
-    return await MongoClient.connect('mongodb://localhost:27017/');
-}
+export const database = new PrismaClient();

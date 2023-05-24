@@ -1,13 +1,19 @@
 import type { LayoutServerLoad } from './$types';
-import { redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
+import { database } from '$lib/database';
 
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
 
-    if (locals.userid) {
+    if (locals.session) {
+        const user = await database.user.findUnique ({
+            where:{session: locals.session}
+          });
         return {
-            userid: locals.userid,
+            username: user?.username,
         }
-    }
+    } else {
+        throw redirect(302, '/login')
+    } 
 
 }
