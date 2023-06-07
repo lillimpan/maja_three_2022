@@ -1,0 +1,67 @@
+class Register_Data {
+  + password: string
+  + username: string
+}
+
+class Login_Data {
+  + password: string
+  + username: string
+}
+
+class Login_Result {
+  + error: { code: number, data: any }
+  + is_error: boolean
+  + success: { session: string }
+}
+
+class Register_Result {
+  + error: { code: number, data: any }
+  + is_error: boolean
+  + success: { session: string }
+}
+
+class Log_out_Result {
+  + error: { code: number, data: any }
+  + is_error: boolean
+  + success: boolean
+}
+
+interface User_data {
+  + register(registerdata: Register_Data): Promise<Register_Result>
+  + login(logindata: Login_Data): Promise<Login_Result>
+  + logout(sessiontoken: string): Promise<Log_out_Result>
+}
+
+interface UIDRandomizer {
+  + generate_id(): string
+}
+
+interface Encrypter {
+  + hash(password: string, salt: string): string
+}
+
+class SQLiteAuth {
+  + logout(sessiontoken: string): Promise<Log_out_Result>
+  + login(logindata: Login_Data): Promise<Login_Result>
+  + register(registerdata: Register_Data): Promise<Register_Result>
+}
+
+class crypto {
+  + randomUUID(): string
+  + pbkdf2Sync(password: string, salt: string, iterations: number, keylen: number, digest: string): string
+  + randomBytes(size: number): Buffer
+}
+
+SQLiteAuth ..|> User_data
+SQLiteAuth --> crypto: uses
+SQLiteAuth --> UIDRandomizer: uses
+SQLiteAuth --> Encrypter: uses
+Login_Result "1" --> "1" Login_Data
+Register_Result "1" --> "1" Register_Data
+Log_out_Result "1" --> "1" Register_Result
+User_data <|-- SQLiteAuth: implements
+User_data "1" --> "1" Login_Result
+User_data "1" --> "1" Register_Result
+User_data "1" --> "1" Log_out_Result
+Register_Data ..> User_data: parameter
+Login_Data ..> User_data: parameter

@@ -28,6 +28,10 @@
     text-align: center;
   }
 
+  p {
+    color: white;
+  }
+
   .style_button1 {
     margin-right: 53%;
     border: none;

@@ -1,0 +1,31 @@
+@startuml
+actor User
+participant "Web Browser" as Browser
+participant "Server" as Server
+participant "SQLiteAuth" as SQLiteAuth
+participant "Database" as Database
+
+User -> Browser: Enter login details
+User -> Browser: Submit login form
+Browser -> Server: Login request
+Server -> SQLiteAuth: login_data_form(formData)
+SQLiteAuth -> SQLiteAuth: Validate form data
+alt Form data is valid
+  SQLiteAuth -> Database: Find user
+  Database --> SQLiteAuth: User data
+  SQLiteAuth -> SQLiteAuth: Hash password
+  alt Passwords match
+    SQLiteAuth -> Database: Update session token
+    Database --> SQLiteAuth: Updated session token
+    SQLiteAuth --> Server: Login successful
+    Server --> Browser: Login successful response
+  else Passwords do not match
+    SQLiteAuth --> Server: Login failed
+    Server --> Browser: Login failed response
+  end
+else Form data is invalid
+  SQLiteAuth --> Server: Form data error
+  Server --> Browser: Form data error response
+end
+
+@enduml

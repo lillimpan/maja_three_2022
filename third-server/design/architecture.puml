@@ -1,0 +1,43 @@
+@startuml
+!theme toy
+
+package "Client" {
+  [Svelte] as client
+}
+
+package "Server" {
+  [Authentication]
+  [Clicker]
+
+}
+note left of Server: - Hosted on Render.com \n- Built using SvelteKit
+
+package "Login/Register Interface" {
+  [Login/Register Interface] as interface
+}
+
+
+package "Login/Register Implementation" {
+
+  [Postgres]
+  note left
+  - hosted on Render.com
+  end note
+  [crypto]
+  note left
+  - encrypted with salt & hash
+  end note
+}
+
+
+client --> Server : HTTP Requests 
+[Clicker] --> client  : ReadableStream events
+
+interface --> "Login/Register Implementation" : Implementation
+
+[Authentication] --> interface : uses
+
+title Clicker webpage
+
+
+@enduml
